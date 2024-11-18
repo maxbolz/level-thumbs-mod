@@ -1,11 +1,11 @@
 {
     "geode": "4.0.0-beta.1",
     "gd": { 
-        "win": "2.207", 
-        "android": "2.207",
-        "mac": "2.207"
+        "win": "2.2074", 
+        "android": "2.2074",
+        "mac": "2.2074"
     },
-    "version": "v1.0.0",
+    "version": "v1.0.1",
     "id": "Zpicy.level_backgrounds",
     "name": "Level Backgrounds",
     "developer": "Zpicy",
