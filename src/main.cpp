@@ -5,6 +5,7 @@ using namespace geode::prelude;
 
 #include <Geode/modify/LevelCell.hpp>
 #include <Geode/modify/MenuLayer.hpp>
+#include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/utils/web.hpp>
 #include "utils.hpp"
 #include "ImageCache.hpp"
@@ -31,6 +32,59 @@ class $modify(MenuLayer){
         return true;
     }
 };
+
+class $modify(LevelInfoLayer) {
+
+    void tryHideChild(CCNode* parent, std::string const& id) {
+        if (!parent)
+            return;
+        CCNode* node = parent->getChildByID(id);
+        if (!node)
+            return;
+        node->setVisible(false);
+    }
+
+    void imageCreationFinished(CCImage* image, CCSprite* bg) {
+        CCTexture2D* texture = new CCTexture2D();
+        if (!texture->initWithImage(image)) {
+            CCLOG("Failed to initialize texture with image.");
+            delete texture; // Prevent memory leak
+            return;
+        }
+        bg->setTexture(texture);
+        bg->setColor(ccc3(128, 128, 128));
+        tryHideChild(this, "bottom-left-art");
+        tryHideChild(this, "bottom-right-art");
+        texture->release();
+    }
+
+    bool tryAddToNode(GJGameLevel* level, CCSprite* bg) {
+        if(CCImage* image = ImageCache::get()->getImage(fmt::format("thumb-{}", (int)level->m_levelID))){
+            if (!image)
+                return false;
+            imageCreationFinished(image, bg);
+            return true;
+        }
+        return false;
+    }
+    
+    bool init(GJGameLevel* level, bool challenge) {
+        if (!LevelInfoLayer::init(level, challenge))
+            return false;
+        auto bg = this->getChildByID("background");
+        int zOrder = -10;
+        if (!bg)
+            bg = this->getChildByID("main-menu-bg");
+        else
+            zOrder = bg->getZOrder();
+        if (!bg)
+            return false;
+        tryAddToNode(level, (CCSprite*)bg);
+        bg->setVisible(true);
+        return true;
+    }
+};
+
 class $modify(MyLevelCell, LevelCell) {
     
     struct Fields{

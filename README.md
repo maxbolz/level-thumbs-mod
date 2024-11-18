@@ -1,3 +1,3 @@
 # LevelThumbnails
 
-This is where she makes a mod.
+This mod is a fork of Level Thumbnails. All credit goes to the original authors!!! Please don't sue me <3
